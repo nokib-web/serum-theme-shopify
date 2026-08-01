@@ -6,6 +6,7 @@ html {scroll-behavior: smooth;}img, video {max-width: 100%;height: auto;vertical
   height: 100% !important;
   display: flex !important;
   flex-direction: column !important;
+  overflow: hidden !important;
 }
 
 .product-card-wrapper .card > .card__content {
@@ -29,9 +30,11 @@ html {scroll-behavior: smooth;}img, video {max-width: 100%;height: auto;vertical
 
 .product-card-wrapper .card > .card__content .quick-add,
 .product-card-wrapper .card > .card__content .separate-atc-btn {
-  margin-top: auto !important;
+  margin: auto 0 0 0 !important;
   width: 100% !important;
+  box-sizing: border-box !important;
 }
+
 
 .product-card-wrapper .card__media .media {
   background-color: transparent;
@@ -81,3 +84,50 @@ html {scroll-behavior: smooth;}img, video {max-width: 100%;height: auto;vertical
   font-size: 1.4rem;
   margin-top: 0.8rem;
 }
+
+
+/* Footer Brand Info Logo & Content Alignment */
+.footer-block__brand-info--align-center {
+  text-align: center;
+}
+.footer-block__brand-info--align-center .footer-block__image-wrapper {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.footer-block__brand-info--align-center .list-social {
+  justify-content: center !important;
+}
+
+.footer-block__brand-info--align-right {
+  text-align: right;
+}
+.footer-block__brand-info--align-right .footer-block__image-wrapper {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+}
+.footer-block__brand-info--align-right .list-social {
+  justify-content: flex-end !important;
+}
+
+.footer-block__brand-info--align-left {
+  text-align: left;
+}
+.footer-block__brand-info--align-left .footer-block__image-wrapper {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+.footer-block__brand-info--align-left .list-social {
+  justify-content: flex-start !important;
+}
+
+/* Mobile: Footer Brand Info logo always centered */
+@media screen and (max-width: 749px) {
+  .footer-block__brand-info {
+    align-items: center !important;
+  }
+  .footer-block__brand-info .footer-block__social-container {
+    justify-content: center !important;
+  }
+}
+
+

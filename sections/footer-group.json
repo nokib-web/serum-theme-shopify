@@ -35,7 +35,8 @@
           "type": "brand_information",
           "settings": {
             "logo": "shopify://shop_images/logo-transparent.png",
-            "logo_width": 350,
+            "logo_width": 210,
+            "logo_alignment": "center",
             "headline": "",
             "description": "<p><a href=\"/\" title=\"/\"><strong>Nura Essentials </strong></a>is dedicated to bringing you the finest natural products for everyday wellness. We believe in quality, purity, and the power of nature to enhance your life.</p>",
             "show_social": true,

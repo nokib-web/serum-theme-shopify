@@ -111,7 +111,18 @@
                       </ul>
                     {%- endif -%}
                   {%- when 'brand_information' -%}
-                    <div class="footer-block__brand-info">
+                    {%- assign logo_alignment = block.settings.logo_alignment | default: 'left' -%}
+                    {%- if logo_alignment == 'center' -%}
+                      {%- assign flex_align = 'center' -%}
+                      {%- assign social_justify = 'center' -%}
+                    {%- elsif logo_alignment == 'right' -%}
+                      {%- assign flex_align = 'flex-end' -%}
+                      {%- assign social_justify = 'flex-end' -%}
+                    {%- else -%}
+                      {%- assign flex_align = 'flex-start' -%}
+                      {%- assign social_justify = 'flex-start' -%}
+                    {%- endif -%}
+                    <div class="footer-block__brand-info footer-block__brand-info--align-{{ logo_alignment }}" style="display: flex; flex-direction: column; align-items: {{ flex_align }}; direction: ltr;">
                       {%- assign footer_logo = block.settings.logo | default: settings.brand_image | default: settings.logo -%}
                       {%- assign footer_logo_width = block.settings.logo_width | default: settings.brand_image_width | default: settings.logo_width | default: 140 -%}
                       {%- if footer_logo != blank -%}
@@ -120,7 +131,7 @@
                         -%}
                         <div
                           class="footer-block__image-wrapper global-media-settings"
-                          style="max-width: min(100%, {{ footer_logo_width }}px); margin-bottom: 1.5rem;"
+                          style="max-width: min(100%, {{ footer_logo_width }}px); margin-bottom: 1.5rem; width: fit-content;"
                         >
                           <a href="{{ routes.root_url }}" class="footer__logo-link">
                             {{
@@ -138,16 +149,16 @@
                       {%- endif -%}
                       {%- assign brand_headline = block.settings.headline | default: settings.brand_headline -%}
                       {%- if brand_headline != blank -%}
-                        <h2 class="footer-block__heading rte" style="margin-bottom: 1rem;">{{ brand_headline }}</h2>
+                        <h2 class="footer-block__heading rte" style="margin-bottom: 1rem; width: 100%;">{{ brand_headline }}</h2>
                       {%- endif -%}
                       {%- assign brand_desc = block.settings.description | default: settings.brand_description -%}
                       {%- if brand_desc != blank -%}
-                        <div class="rte footer-block__brand-description" style="margin-bottom: 1.5rem; color: rgba(var(--color-foreground), 0.85); line-height: 1.6;">
+                        <div class="rte footer-block__brand-description" style="margin-bottom: 1.5rem; color: rgba(var(--color-foreground), 0.85); line-height: 1.6; width: 100%;">
                           {{ brand_desc }}
                         </div>
                       {%- endif -%}
                       {%- if block.settings.show_social and has_social_icons -%}
-                        <div class="footer-block__social-container" style="margin-top: 1rem;">
+                        <div class="footer-block__social-container" style="margin-top: 1rem; display: flex; justify-content: {{ social_justify }}; width: 100%;">
                           {%- render 'social-icons' -%}
                         </div>
                       {%- endif -%}
@@ -619,6 +630,26 @@
           "default": 140,
           "unit": "px",
           "label": "Logo width"
+        },
+        {
+          "type": "select",
+          "id": "logo_alignment",
+          "label": "Logo alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Middle (Center)"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left"
         },
         {
           "type": "text",
