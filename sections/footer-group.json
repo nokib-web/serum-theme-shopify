@@ -31,13 +31,14 @@
     "footer": {
       "type": "footer",
       "blocks": {
-        "fc645871-d789-4cfa-8584-4f8a29b6ce92": {
-          "type": "image",
+        "brand_information_rXMCNN": {
+          "type": "brand_information",
           "settings": {
-            "image": "shopify://shop_images/logo-transparent.png",
-            "image_width": 550,
-            "alignment": "center",
-            "url": "/",
+            "logo": "shopify://shop_images/logo-transparent.png",
+            "logo_width": 350,
+            "headline": "",
+            "description": "<p><a href=\"/\" title=\"/\"><strong>Nura Essentials </strong></a>is dedicated to bringing you the finest natural products for everyday wellness. We believe in quality, purity, and the power of nature to enhance your life.</p>",
+            "show_social": true,
             "width_desktop": 3,
             "width_mobile": "2"
           }
@@ -74,7 +75,7 @@
         }
       },
       "block_order": [
-        "fc645871-d789-4cfa-8584-4f8a29b6ce92",
+        "brand_information_rXMCNN",
         "1c647602-cc00-4009-a058-976435c8ee9e",
         "link_list_thK4Rc",
         "24f208fd-0898-43eb-af23-d74f8420ab37"
@@ -87,7 +88,7 @@
         "enable_language_selector": true,
         "payment_enable": true,
         "enabled_payment_types": "",
-        "show_policy": false,
+        "show_policy": true,
         "branding_text": "All Rights Reserved.",
         "margin_top": 0,
         "padding_top": 76,

@@ -296,7 +296,7 @@
             "enable_mobile_position": false,
             "mobile_offset_x": 30,
             "mobile_offset_y": 30,
-            "product": "asset-pack-87543316482-example-product-1",
+            "product": "nura-copper-peptide-cream-skin-repair-anti-wrinkle-barrier-strengthening-50g",
             "text": "",
             "alignment": "left"
           }
@@ -309,7 +309,7 @@
             "enable_mobile_position": false,
             "mobile_offset_x": 32,
             "mobile_offset_y": 42,
-            "product": "asset-pack-87543316482-example-product-3",
+            "product": "nura-exosome-growth-factor-serum-skin-repair-brightening-anti-aging-30ml",
             "text": "<p>Copper Peptide Hydrating Serum</p>",
             "alignment": "left"
           }
@@ -322,7 +322,7 @@
             "enable_mobile_position": false,
             "mobile_offset_x": 58,
             "mobile_offset_y": 62,
-            "product": "asset-pack-87543316482-example-products",
+            "product": "nura-radiance-renewal-serum-with-vitamin-c-brightening-antioxidant-face-serum-30ml",
             "text": "<p>Barrier Renewal Moisturizer</p>",
             "alignment": "left"
           }

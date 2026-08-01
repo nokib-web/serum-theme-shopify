@@ -521,11 +521,30 @@
                 </div>
               {%- endif -%}
 
-              {%- if section.settings.show_social_icons -%}
-                <div class="contact-info-socials">
-                  <span class="contact-info-item__label">{{ section.settings.social_label | default: 'Follow Us' }}</span>
-                  {% render 'social-icons' %}
-                </div>
+              {%- liquid
+                assign facebook_link = settings.social_facebook_link | default: settings.facebook_link
+                assign instagram_link = settings.social_instagram_link | default: settings.instagram_link
+                assign youtube_link = settings.social_youtube_link | default: settings.youtube_link
+                assign tiktok_link = settings.social_tiktok_link | default: settings.tiktok_link
+                assign twitter_link = settings.social_twitter_link | default: settings.twitter_link
+                assign pinterest_link = settings.social_pinterest_link | default: settings.pinterest_link
+                assign snapchat_link = settings.social_snapchat_link | default: settings.snapchat_link
+                assign tumblr_link = settings.social_tumblr_link | default: settings.tumblr_link
+                assign vimeo_link = settings.social_vimeo_link | default: settings.vimeo_link
+
+                assign has_social_icons = false
+                if facebook_link != blank or instagram_link != blank or youtube_link != blank or tiktok_link != blank or twitter_link != blank or pinterest_link != blank or snapchat_link != blank or tumblr_link != blank or vimeo_link != blank
+                  assign has_social_icons = true
+                endif
+              -%}
+
+              {%- if has_social_icons or section.settings.show_social_icons -%}
+                {%- if has_social_icons -%}
+                  <div class="contact-info-socials">
+                    <span class="contact-info-item__label">{{ section.settings.social_label | default: 'Follow Us' }}</span>
+                    {% render 'social-icons' %}
+                  </div>
+                {%- endif -%}
               {%- endif -%}
             </div>
           </div>

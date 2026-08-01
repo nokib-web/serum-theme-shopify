@@ -184,7 +184,7 @@
         "buy_buttons": {
           "type": "buy_buttons",
           "settings": {
-            "show_dynamic_checkout": false,
+            "show_dynamic_checkout": true,
             "skip_cart": false,
             "uppercase_text": true,
             "icon_scale": 120,
@@ -304,6 +304,7 @@
         },
         "de158e68-5d0d-4819-a625-e2dabdff87d1": {
           "type": "collapsible_tab",
+          "disabled": true,
           "settings": {
             "heading": "Collapsible row",
             "heading_size": "medium",
@@ -580,13 +581,13 @@
         "display_id": false,
         "visibility": "always-display",
         "title": "You may also like",
-        "title_highlight_color": "#6D388B",
+        "title_highlight_color": "#6d388b",
         "heading_size": "h1",
         "description": "",
         "show_description": false,
         "description_style": "body",
         "color_scheme": "background-1",
-        "collection": "asset-pack-87543316482-example-products",
+        "collection": "featured-collection",
         "products_to_show": 4,
         "stretch_cards": true,
         "show_view_all": true,
@@ -626,9 +627,9 @@
         "mobile_arrows_position": "under",
         "padding_top": 36,
         "padding_bottom": 36,
-        "custom_colors_background": "#FFFFFF",
+        "custom_colors_background": "#ffffff",
         "custom_gradient_background": "",
-        "custom_colors_text": "#2E2A39",
+        "custom_colors_text": "#2e2a39",
         "custom_colors_solid_button_background": "#dd1d1d",
         "custom_colors_solid_button_text": "#ffffff"
       }

@@ -70,3 +70,14 @@ html {scroll-behavior: smooth;}img, video {max-width: 100%;height: auto;vertical
 }
 
 
+
+/* Footer Brand Info & Social Icons */
+.footer-block__brand-info .list-social {
+  justify-content: flex-start;
+  gap: 1.2rem;
+  margin-top: 1rem;
+}
+.footer-block__brand-description {
+  font-size: 1.4rem;
+  margin-top: 0.8rem;
+}
