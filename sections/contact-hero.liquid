@@ -1,0 +1,344 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+  .contact-hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3.5rem;
+    align-items: center;
+  }
+
+  @media screen and (min-width: 750px) {
+    .contact-hero__grid {
+      grid-template-columns: 1.1fr 1fr;
+      gap: 5rem;
+    }
+  }
+
+  .contact-hero__subheading {
+    display: block;
+    font-size: 1.3rem;
+    letter-spacing: 0.15rem;
+    text-transform: uppercase;
+    color: rgba(var(--color-foreground), 0.7);
+    margin-bottom: 1.2rem;
+    font-weight: 600;
+  }
+
+  .contact-hero__title {
+    margin: 0 0 1.6rem 0;
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .contact-hero__description {
+    color: rgba(var(--color-foreground), 0.8);
+    font-size: 1.6rem;
+    line-height: 1.6;
+    margin-bottom: 2.8rem;
+    max-width: 58rem;
+  }
+
+  .contact-hero__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.4rem;
+    align-items: center;
+  }
+
+  .contact-hero__media-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .contact-hero__image-frame {
+    position: relative;
+    width: 100%;
+    max-width: 46rem;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background-color: rgba(var(--color-foreground), 0.04);
+    box-shadow: 0 1.5rem 3.5rem rgba(0, 0, 0, 0.06);
+  }
+
+  .contact-hero__image-frame--blob {
+    border-radius: 60% 40% 55% 45% / 45% 55% 45% 55%;
+  }
+
+  .contact-hero__image-frame--rounded {
+    border-radius: 2.4rem;
+  }
+
+  .contact-hero__image-frame--circle {
+    border-radius: 50%;
+  }
+
+  .contact-hero__image-frame img,
+  .contact-hero__image-frame svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+{%- endstyle -%}
+
+<div class="color-scheme-{{ section.id }} color-{{ section.settings.color_scheme }} gradient content-for-grouping animate-section animate--hidden {{ section.settings.visibility }}">
+  {% if section.settings.display_id %}
+    <copy-button class='section-id-btn button' data-content="#shopify-section-{{ section.id }}" data-success="false">
+      <span class="copy-text">Click to copy section ID</span>
+      <span class="copy-success">ID copied successfully!</span>
+    </copy-button>
+  {% endif %}
+  <div class="page-width section-{{ section.id }}-padding">
+    <div class="contact-hero__grid">
+      <div class="contact-hero__content">
+        {%- if section.settings.subheading != blank -%}
+          <span class="contact-hero__subheading caption-with-letter-spacing">
+            {{ section.settings.subheading }}
+          </span>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h1 class="contact-hero__title {{ section.settings.heading_size }} title-with-highlight" style="--hightlight-color: {{ section.settings.title_highlight_color }}">
+            {{ section.settings.title }}
+          </h1>
+        {%- endif -%}
+        {%- if section.settings.text != blank -%}
+          <div class="contact-hero__description rte">
+            {{ section.settings.text }}
+          </div>
+        {%- endif -%}
+        <div class="contact-hero__buttons">
+          {%- if section.settings.button_1_label != blank -%}
+            <a href="{{ section.settings.button_1_link | default: '#' }}" class="button button--primary">
+              {{ section.settings.button_1_label }}
+            </a>
+          {%- endif -%}
+          {%- if section.settings.button_2_label != blank -%}
+            <a href="{{ section.settings.button_2_link | default: '#' }}" class="button button--secondary">
+              {{ section.settings.button_2_label }}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+      <div class="contact-hero__media-wrapper">
+        <div class="contact-hero__image-frame contact-hero__image-frame--{{ section.settings.image_shape }}">
+          {%- if section.settings.image != blank -%}
+            <img
+              srcset="
+                {%- if section.settings.image.width >= 375 -%}{{ section.settings.image | image_url: width: 375 }} 375w,{%- endif -%}
+                {%- if section.settings.image.width >= 550 -%}{{ section.settings.image | image_url: width: 550 }} 550w,{%- endif -%}
+                {%- if section.settings.image.width >= 750 -%}{{ section.settings.image | image_url: width: 750 }} 750w,{%- endif -%}
+                {{ section.settings.image | image_url }} {{ section.settings.image.width }}w
+              "
+              src="{{ section.settings.image | image_url: width: 750 }}"
+              alt="{{ section.settings.image.alt | default: section.settings.title | escape }}"
+              loading="lazy"
+              width="{{ section.settings.image.width }}"
+              height="{{ section.settings.image.height }}"
+            >
+          {%- else -%}
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Contact Hero Banner",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "display_id",
+      "label": "Display section ID",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "visibility",
+      "options": [
+        {
+          "value": "desktop-hidden",
+          "label": "Mobile only"
+        },
+        {
+          "value": "mobile-hidden",
+          "label": "Desktop only"
+        },
+        {
+          "value": "always-display",
+          "label": "All devices"
+        }
+      ],
+      "label": "Display on",
+      "default": "always-display"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subheading",
+      "default": "WE'D LOVE TO HEAR FROM YOU",
+      "label": "Subheading"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "default": "Contact Us for Any Enquiries!",
+      "label": "Heading",
+      "info": "Bold certain words to highlight them with a different color."
+    },
+    {
+      "type": "color",
+      "id": "title_highlight_color",
+      "label": "Heading highlight color",
+      "default": "#6D388B"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Small"
+        },
+        {
+          "value": "h1",
+          "label": "Medium"
+        },
+        {
+          "value": "h0",
+          "label": "Large"
+        }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "default": "<p>Whether you have a question about our products, an order, or just want to say hello, we are here for you. Fill out the form below and we will get back to you as soon as possible.</p>",
+      "label": "Description text"
+    },
+    {
+      "type": "text",
+      "id": "button_1_label",
+      "default": "Shop Our Range",
+      "label": "Primary Button Label"
+    },
+    {
+      "type": "url",
+      "id": "button_1_link",
+      "label": "Primary Button Link"
+    },
+    {
+      "type": "text",
+      "id": "button_2_label",
+      "default": "Our Story",
+      "label": "Secondary Button Label"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Secondary Button Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Feature Image"
+    },
+    {
+      "type": "select",
+      "id": "image_shape",
+      "options": [
+        {
+          "value": "blob",
+          "label": "Organic Blob"
+        },
+        {
+          "value": "rounded",
+          "label": "Rounded Rectangle"
+        },
+        {
+          "value": "circle",
+          "label": "Circle"
+        }
+      ],
+      "default": "blob",
+      "label": "Image Shape"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "accent-1",
+          "label": "Accent 1"
+        },
+        {
+          "value": "accent-2",
+          "label": "Accent 2"
+        },
+        {
+          "value": "background-1",
+          "label": "Background 1"
+        },
+        {
+          "value": "background-2",
+          "label": "Background 2"
+        },
+        {
+          "value": "inverse",
+          "label": "Inverse"
+        }
+      ],
+      "default": "background-1",
+      "label": "Color scheme"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact Hero Banner"
+    }
+  ]
+}
+{% endschema %}

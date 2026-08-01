@@ -1,0 +1,943 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  #ContactForm-{{ section.id }} .contact-from__errors-container,
+  #ContactForm-{{ section.id }} .contact__field-error {
+    --color-foreground: {{ section.settings.errors_text_color.red }}, {{ section.settings.errors_text_color.green }}, {{ section.settings.errors_text_color.blue }};
+    color: rgb(var(--color-foreground));
+  }
+  #ContactForm-{{ section.id }} .contact-from__success-container {
+    --color-foreground: {{ section.settings.success_text_color.red }}, {{ section.settings.success_text_color.green }}, {{ section.settings.success_text_color.blue }};
+    color: rgb(var(--color-foreground));
+  }
+
+  .color-scheme-{{ section.id }}.color-custom {
+    --color-background: {{ section.settings.custom_colors_background.red }}, {{ section.settings.custom_colors_background.green }}, {{ section.settings.custom_colors_background.blue }};
+    --gradient-background: {% if section.settings.custom_gradient_background != blank %}{{ section.settings.custom_gradient_background }}{% else %}{{ section.settings.custom_colors_background }}{% endif %};
+    {% if section.settings.custom_image_background != blank %}
+      {% # theme-check-disable %}
+      --gradient-background: url('{{ section.settings.custom_image_background | img_url: 'master' }}') center center / cover no-repeat;
+      {% # theme-check-enable %}
+    {% endif %}
+    --color-foreground: {{ section.settings.custom_colors_text.red }}, {{ section.settings.custom_colors_text.green }}, {{ section.settings.custom_colors_text.blue }};
+    --color-button: {{ section.settings.custom_colors_solid_button_background.red }}, {{ section.settings.custom_colors_solid_button_background.green }}, {{ section.settings.custom_colors_solid_button_background.blue }};
+    --color-button-text: {{ section.settings.custom_colors_solid_button_text.red }}, {{ section.settings.custom_colors_solid_button_text.green }}, {{ section.settings.custom_colors_solid_button_text.blue }};
+  }
+
+  /* Redesigned Contact Section CSS */
+  .contact-section__grid-{{ section.id }} {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  @media screen and (min-width: 750px) {
+    .contact-section__grid-{{ section.id }} {
+      grid-template-columns: {% if section.settings.show_info_card %}1.25fr 1fr{% else %}1fr{% endif %};
+      gap: 5rem;
+    }
+  }
+
+  .contact-section__subheading {
+    display: block;
+    font-size: 1.2rem;
+    letter-spacing: 0.15rem;
+    text-transform: uppercase;
+    color: rgba(var(--color-foreground), 0.6);
+    margin-bottom: 0.8rem;
+    font-weight: 600;
+  }
+
+  .contact-section__title {
+    margin: 0 0 2.5rem 0;
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+  }
+
+  .contact-info-card {
+    padding: 3.5rem 3rem;
+    border-radius: 2rem;
+    background-color: rgba(var(--color-foreground), 0.03);
+    height: 100%;
+  }
+
+  .contact-info-card__title {
+    margin: 0 0 2.5rem 0;
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+  }
+
+  .contact-info-card__items {
+    display: flex;
+    flex-direction: column;
+    gap: 2.4rem;
+  }
+
+  .contact-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.6rem;
+  }
+
+  .contact-info-item__icon-badge {
+    width: 4.4rem;
+    height: 4.4rem;
+    border-radius: 50%;
+    background-color: rgba(var(--color-foreground), 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: rgb(var(--color-foreground));
+  }
+
+  .contact-info-item__details {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .contact-info-item__label {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: rgb(var(--color-foreground));
+    margin-bottom: 0.3rem;
+  }
+
+  .contact-info-item__value {
+    font-size: 1.4rem;
+    color: rgba(var(--color-foreground), 0.8);
+    text-decoration: none;
+    line-height: 1.5;
+  }
+
+  .contact-info-item__value:hover {
+    text-decoration: underline;
+  }
+
+  .contact-info-item__subtext {
+    font-size: 1.25rem;
+    color: rgba(var(--color-foreground), 0.6);
+    margin-top: 0.2rem;
+  }
+
+  .contact-info-socials {
+    padding-top: 1.5rem;
+    border-top: 0.1rem solid rgba(var(--color-foreground), 0.1);
+  }
+
+  .contact-info-socials .list-social {
+    justify-content: flex-start;
+    margin-top: 0.8rem;
+  }
+{%- endstyle -%}
+
+<div class="color-scheme-{{ section.id }} color-{{ section.settings.color_scheme }} gradient content-for-grouping animate-section animate--hidden {{ section.settings.visibility }}">
+  {% if section.settings.display_id %}
+    <copy-button class='section-id-btn button' data-content="#shopify-section-{{ section.id }}" data-success="false">
+      <span class="copy-text">Click to copy section ID</span>
+      <span class="copy-success">ID copied successfully!</span>
+    </copy-button>
+  {% endif %}
+  <contact-form class="contact page-width section-{{ section.id }}-padding display-block" id="ContactForm-{{ section.id }}">
+    <div class="contact-section__grid-{{ section.id }}">
+      
+      {%- comment -%} Left Column: Form {%- endcomment -%}
+      <div class="contact-section__form-column">
+        {%- if section.settings.subheading != blank -%}
+          <span class="contact-section__subheading caption-with-letter-spacing animate-item animate-item--child index-0">
+            {{ section.settings.subheading }}
+          </span>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="contact-section__title title-wrapper--no-top-margin {{ section.settings.heading_size }} title-with-highlight animate-item animate-item--child index-0" style='--hightlight-color:{{ section.settings.title_highlight_color }}'>
+            {{ section.settings.title }}
+          </h2>
+        {%- else -%}
+          <h2 class="visually-hidden">{{ 'templates.contact.form.title' | t }}</h2>
+        {%- endif -%}
+
+        {% form 'contact', id: 'ContactForm', class: 'isolate animate-item animate-item--child index-1' %}
+          {%- if form.posted_successfully? -%}
+            <div
+              class='contact-from__message-container contact-from__success-container flex flex-align-center custom-border-hex custom-border-radius custom-bg'
+              style="--bg-color: {{ section.settings.success_bg_color }};--border-radius: {{ section.settings.success_border_radius }}px;--border-color: {{ section.settings.success_border_color }};--border-thickness:{{ section.settings.success_border_width }}px;"
+            >
+              {% if section.settings.success_custom_icon != blank %}
+                <img
+                  src="{{ section.settings.success_custom_icon | image_url }}"
+                  {% if section.settings.success_custom_icon.alt != blank %}
+                    alt="{{ section.settings.success_custom_icon.alt }}"
+                  {% endif %}
+                  width="auto"
+                  height="auto"
+                  loading="lazy"
+                >
+              {% elsif section.settings.success_icon != blank %}
+                {% render 'material-icon', icon: section.settings.success_icon, filled: section.settings.success_icon_filled %}
+              {% endif %}
+              <div class="contact-from__message__content">
+                <h2 class="form-status caption-large text-body" role="alert" tabindex="-1" autofocus>
+                  {{ 'templates.contact.form.post_success' | t }}
+                </h2>
+              </div>
+            </div>
+          {%- elsif form.errors -%}
+            <div
+              class='contact-from__message-container contact-from__errors-container flex flex-align-center custom-border-hex custom-border-radius custom-bg'
+              style="--bg-color: {{ section.settings.errors_bg_color }};--border-radius: {{ section.settings.errors_border_radius }}px;--border-color: {{ section.settings.errors_border_color }};--border-thickness:{{ section.settings.errors_border_width }}px;"
+            >
+              {% if section.settings.errors_custom_icon != blank %}
+                <img
+                  src="{{ section.settings.errors_custom_icon | image_url }}"
+                  {% if section.settings.errors_custom_icon.alt != blank %}
+                    alt="{{ section.settings.errors_custom_icon.alt }}"
+                  {% endif %}
+                  width="auto"
+                  height="auto"
+                  loading="lazy"
+                >
+              {% elsif section.settings.errors_icon != blank %}
+                {% render 'material-icon', icon: section.settings.errors_icon, filled: section.settings.errors_icon_filled %}
+              {% endif %}
+              <div class="contact-from__message__content">
+                <h2 class="form-status caption-large text-body" role="alert" tabindex="-1" autofocus>
+                  {{ 'templates.contact.form.error_heading' | t }}
+                </h2>
+                <ul class="caption-large" role="list">
+                  <li>
+                    {{ form.errors.translated_fields.email | capitalize }}
+                    {{ form.errors.messages.email }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          {%- endif -%}
+
+          {% if section.blocks.size > 0 %}
+            {%- for block in section.blocks -%}
+              {% case block.type %}
+                {% when 'field_row' %}
+                  {% if block.settings.input_1_enabled and block.settings.input_2_enabled %}
+                    <div class="contact__fields">
+                  {% endif %}
+                  
+                  {%- if block.settings.input_1_enabled -%}
+                    {% liquid
+                      case block.settings.input_1_type
+                        when 'name'
+                          assign field_1_name = 'templates.contact.form.name' | t
+                        when 'email'
+                          assign field_1_name = 'templates.contact.form.email' | t
+                        when 'phone'
+                          assign field_1_name = 'templates.contact.form.phone' | t
+                        else
+                          assign field_1_name = block.settings.input_1_custom_name | escape
+                      endcase
+                      assign required = false
+                      if block.settings.input_1_required or block.settings.input_1_type == 'email'
+                        assign required = true
+                      endif
+                    %}
+                    <div class="field-wrapper" data-required="{{ required }}">
+                      <div class="field">
+                        <input
+                          class="field__input"
+                          type="{% if block.settings.input_1_type == 'email' %}email{% elsif block.settings.input_1_type == 'phone' %}tel{% else %}text{% endif %}"
+                          id="ContactForm-{{ block.id }}-input1"
+                          {% if block.settings.input_1_type == 'email' %}
+                            name="contact[email]"
+                          {% else %}
+                            name="contact[{{ field_1_name }}]"
+                          {% endif %}
+                          {% if block.settings.input_1_type == 'email' %}
+                            autocomplete="email"
+                            autocapitalize="off"
+                            spellcheck="false"
+                          {% elsif block.settings.input_1_type == 'phone' %}
+                            autocomplete="tel"
+                            pattern="[0-9\-]*"
+                          {% elsif block.settings.input_1_type == 'name' %}
+                            autocomplete="name"
+                          {% endif %}
+                          {% if required %} aria-required="true"{% endif %}
+                          placeholder="{{ field_1_name }}"
+                          {%- if form.errors contains 'email' and block.settings.input_1_type == 'email' -%}
+                            aria-invalid="true"
+                            aria-describedby="ContactForm-email1-{{ block.id }}-error"
+                          {% endif %}
+                        >
+                        <label class="field__label" for="ContactForm-{{ block.id }}-input1">{{ field_1_name }}</label>
+                      </div>
+                      <small class="contact__field-error field-wrapper__error-msg hidden">
+                        <span class="visually-hidden">{{ 'accessibility.error' | t }}</span>
+                        <span class="form__message">
+                          {{ block.settings.input_1_error_message }}
+                        </span>
+                      </small>
+                    </div>
+                  {%- endif -%}
+                  
+                  {%- if block.settings.input_2_enabled -%}
+                    {% liquid
+                      case block.settings.input_2_type
+                        when 'name'
+                          assign field_2_name = 'templates.contact.form.name' | t
+                        when 'email'
+                          assign field_2_name = 'templates.contact.form.email' | t
+                        when 'phone'
+                          assign field_2_name = 'templates.contact.form.phone' | t
+                        else
+                          assign field_2_name = block.settings.input_2_custom_name | escape
+                      endcase
+                      assign required = false
+                      if block.settings.input_2_required or block.settings.input_2_type == 'email'
+                        assign required = true
+                      endif
+                    %}
+                    <div class="field-wrapper" data-required="{{ required }}">
+                      <div class="field">
+                        <input
+                          class="field__input"
+                          type="{% if block.settings.input_2_type == 'email' %}email{% elsif block.settings.input_2_type == 'phone' %}tel{% else %}text{% endif %}"
+                          id="ContactForm-{{ block.id }}-input2"
+                          {% if block.settings.input_2_type == 'email' %}
+                            name="contact[email]"
+                          {% else %}
+                            name="contact[{{ field_2_name }}]"
+                          {% endif %}
+                          {% if block.settings.input_2_type == 'email' %}
+                            autocomplete="email"
+                            autocapitalize="off"
+                            spellcheck="false"
+                          {% elsif block.settings.input_2_type == 'phone' %}
+                            autocomplete="tel"
+                            pattern="[0-9\-]*"
+                          {% elsif block.settings.input_2_type == 'name' %}
+                            autocomplete="name"
+                          {% endif %}
+                          {% if required %} aria-required="true"{% endif %}
+                          placeholder="{{ field_2_name }}"
+                          {%- if form.errors contains 'email' and block.settings.input_2_type == 'email' -%}
+                            aria-invalid="true"
+                            aria-describedby="ContactForm-email2-{{ block.id }}-error"
+                          {% endif %}
+                        >
+                        <label class="field__label" for="ContactForm-{{ block.id }}-input2">{{ field_2_name }}</label>
+                      </div>
+                      <small class="contact__field-error field-wrapper__error-msg hidden">
+                        <span class="visually-hidden">{{ 'accessibility.error' | t }}</span>
+                        <span class="form__message">
+                          {{ block.settings.input_2_error_message }}
+                        </span>
+                      </small>
+                    </div>
+                  {%- endif -%}
+                  {% if block.settings.input_1_enabled and block.settings.input_2_enabled %}
+                    </div>
+                  {% endif %}
+                
+                {% when 'textarea' %}
+                  <div class="field-wrapper"{% if block.settings.input_2_required %} data-required="true"{% endif %}>
+                    <div class="field">
+                      {% liquid
+                        if block.settings.input_type == 'comment'
+                          assign textarea_name = 'templates.contact.form.comment' | t
+                        else
+                          assign textarea_name = block.settings.input_custom_name | escape
+                        endif
+                      %}
+                      <textarea
+                        rows="10"
+                        id="ContactForm-{{ block.id }}-textarea"
+                        class="text-area field__input"
+                        name="contact[{{ textarea_name }}]"
+                        {% if block.settings.input_required %} aria-required="true"{% endif %}
+                        placeholder="{{ textarea_name }}"
+                        {% if block.settings.max_characters != blank and block.settings.max_characters > 0 %}
+                          maxlength="{{ block.settings.max_characters }}"
+                        {% endif %}
+                      >{% if block.settings.input_type == 'comment' %}{{ form.body }}{% endif %}</textarea>
+                      <label class="form__label field__label" for="ContactForm-{{ block.id }}-textarea">
+                        {{ textarea_name }}
+                      </label>
+                    </div>
+                    <small class="contact__field-error field-wrapper__error-msg hidden">
+                      <span class="visually-hidden">{{ 'accessibility.error' | t }}</span>
+                      <span class="form__message">
+                        {{ block.settings.input_error_message }}
+                      </span>
+                    </small>
+                  </div>
+              {% endcase %}
+            {%- endfor -%}
+          {% else %}
+            <div class="contact__fields">
+              <div class="field-wrapper">
+                <div class="field">
+                  <input
+                    class="field__input"
+                    autocomplete="name"
+                    type="text"
+                    id="ContactForm-name"
+                    name="contact[{{ 'templates.contact.form.name' | t }}]"
+                    value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+                    placeholder="{{ 'templates.contact.form.name' | t }}"
+                  >
+                  <label class="field__label" for="ContactForm-name">{{ 'templates.contact.form.name' | t }}</label>
+                </div>
+              </div>
+              <div class="field-wrapper">
+                <div class="field">
+                  <input
+                    autocomplete="email"
+                    type="email"
+                    id="ContactForm-email"
+                    class="field__input"
+                    name="contact[email]"
+                    spellcheck="false"
+                    autocapitalize="off"
+                    value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+                    aria-required="true"
+                    {% if form.errors contains 'email' %}
+                      aria-invalid="true"
+                      aria-describedby="ContactForm-email-error"
+                    {% endif %}
+                    placeholder="{{ 'templates.contact.form.email' | t }}"
+                  >
+                  <label class="field__label" for="ContactForm-email">
+                    {{- 'templates.contact.form.email' | t }}
+                    <span aria-hidden="true">*</span></label
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="field-wrapper">
+              <div class="field">
+                <input
+                  type="tel"
+                  id="ContactForm-phone"
+                  class="field__input"
+                  autocomplete="tel"
+                  name="contact[{{ 'templates.contact.form.phone' | t }}]"
+                  pattern="[0-9\-]*"
+                  value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+                  placeholder="{{ 'templates.contact.form.phone' | t }}"
+                >
+                <label class="field__label" for="ContactForm-phone">{{ 'templates.contact.form.phone' | t }}</label>
+              </div>
+            </div>
+            <div class="field-wrapper">
+              <div class="field">
+                <textarea
+                  rows="10"
+                  id="ContactForm-body"
+                  class="text-area field__input"
+                  name="contact[{{ 'templates.contact.form.comment' | t }}]"
+                  placeholder="{{ 'templates.contact.form.comment' | t }}"
+                >
+                  {{- form.body -}}
+                </textarea>
+                <label class="form__label field__label" for="ContactForm-body">
+                  {{- 'templates.contact.form.comment' | t -}}
+                </label>
+              </div>
+            </div>
+          {% endif %}
+          
+          <div class="contact__button">
+            <button type="submit" class="button button--primary{% if section.settings.button_full_width %} button--full-width{% endif %}">
+              {{ section.settings.submit_button_label | default: 'SEND MESSAGE' }}
+            </button>
+          </div>
+        {%- endform -%}
+      </div>
+
+      {%- comment -%} Right Column: Contact Info Card {%- endcomment -%}
+      {%- if section.settings.show_info_card -%}
+        <div class="contact-section__info-column animate-item animate-item--child index-2">
+          <div class="contact-info-card color-{{ section.settings.info_card_color_scheme }}">
+            {%- if section.settings.info_card_title != blank -%}
+              <h3 class="contact-info-card__title h3">
+                {{ section.settings.info_card_title }}
+              </h3>
+            {%- endif -%}
+
+            <div class="contact-info-card__items">
+              {%- if section.settings.email_value != blank -%}
+                <div class="contact-info-item">
+                  <div class="contact-info-item__icon-badge">
+                    <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                      <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                  </div>
+                  <div class="contact-info-item__details">
+                    <span class="contact-info-item__label">{{ section.settings.email_label | default: 'Email Us' }}</span>
+                    <a href="mailto:{{ section.settings.email_value }}" class="contact-info-item__value">{{ section.settings.email_value }}</a>
+                  </div>
+                </div>
+              {%- endif -%}
+
+              {%- if section.settings.phone_value != blank -%}
+                <div class="contact-info-item">
+                  <div class="contact-info-item__icon-badge">
+                    <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                  </div>
+                  <div class="contact-info-item__details">
+                    <span class="contact-info-item__label">{{ section.settings.phone_label | default: 'Call Us' }}</span>
+                    <a href="tel:{{ section.settings.phone_value }}" class="contact-info-item__value">{{ section.settings.phone_value }}</a>
+                    {%- if section.settings.phone_hours != blank -%}
+                      <span class="contact-info-item__subtext">{{ section.settings.phone_hours }}</span>
+                    {%- endif -%}
+                  </div>
+                </div>
+              {%- endif -%}
+
+              {%- if section.settings.address_value != blank -%}
+                <div class="contact-info-item">
+                  <div class="contact-info-item__icon-badge">
+                    <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                  </div>
+                  <div class="contact-info-item__details">
+                    <span class="contact-info-item__label">{{ section.settings.address_label | default: 'Visit Us' }}</span>
+                    <span class="contact-info-item__value">{{ section.settings.address_value }}</span>
+                  </div>
+                </div>
+              {%- endif -%}
+
+              {%- if section.settings.show_social_icons -%}
+                <div class="contact-info-socials">
+                  <span class="contact-info-item__label">{{ section.settings.social_label | default: 'Follow Us' }}</span>
+                  {% render 'social-icons' %}
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+
+    </div>
+  </contact-form>
+</div>
+
+{% schema %}
+{
+  "name": "Contact Form Section",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "display_id",
+      "label": "Display section ID",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "visibility",
+      "options": [
+        {
+          "value": "desktop-hidden",
+          "label": "Mobile only"
+        },
+        {
+          "value": "mobile-hidden",
+          "label": "Desktop only"
+        },
+        {
+          "value": "always-display",
+          "label": "All devices"
+        }
+      ],
+      "label": "Display on",
+      "default": "always-display"
+    },
+    {
+      "type": "header",
+      "content": "Form Header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subheading",
+      "default": "SEND US A MESSAGE",
+      "label": "Subheading"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "default": "How Can We Help?",
+      "label": "Heading",
+      "info": "Bold certain words to highlight them with a different color."
+    },
+    {
+      "type": "color",
+      "id": "title_highlight_color",
+      "label": "Heading highlight color",
+      "default": "#6D388B"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Small"
+        },
+        {
+          "value": "h1",
+          "label": "Medium"
+        },
+        {
+          "value": "h0",
+          "label": "Large"
+        }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "text",
+      "id": "submit_button_label",
+      "default": "SEND MESSAGE",
+      "label": "Submit Button Label"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_full_width",
+      "label": "Use full width button style",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Contact Info Card"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_info_card",
+      "label": "Show Contact Info Card",
+      "default": true
+    },
+    {
+      "type": "inline_richtext",
+      "id": "info_card_title",
+      "default": "Contact Information",
+      "label": "Info Card Title"
+    },
+    {
+      "type": "select",
+      "id": "info_card_color_scheme",
+      "options": [
+        {
+          "value": "accent-1",
+          "label": "Accent 1"
+        },
+        {
+          "value": "accent-2",
+          "label": "Accent 2"
+        },
+        {
+          "value": "background-1",
+          "label": "Background 1"
+        },
+        {
+          "value": "background-2",
+          "label": "Background 2"
+        },
+        {
+          "value": "inverse",
+          "label": "Inverse"
+        }
+      ],
+      "default": "background-2",
+      "label": "Info Card Color Scheme"
+    },
+    {
+      "type": "text",
+      "id": "email_label",
+      "default": "Email Us",
+      "label": "Email Label"
+    },
+    {
+      "type": "text",
+      "id": "email_value",
+      "default": "support@nuraessentials.com",
+      "label": "Email Address"
+    },
+    {
+      "type": "text",
+      "id": "phone_label",
+      "default": "Call Us",
+      "label": "Phone Label"
+    },
+    {
+      "type": "text",
+      "id": "phone_value",
+      "default": "+1 (800) 123-4567",
+      "label": "Phone Number"
+    },
+    {
+      "type": "text",
+      "id": "phone_hours",
+      "default": "Mon - Fri: 9AM - 6PM",
+      "label": "Working Hours"
+    },
+    {
+      "type": "text",
+      "id": "address_label",
+      "default": "Visit Us",
+      "label": "Address Label"
+    },
+    {
+      "type": "text",
+      "id": "address_value",
+      "default": "Nura Essentials Studio, New York, USA",
+      "label": "Address / Location"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social_icons",
+      "label": "Show Social Media Icons",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "social_label",
+      "default": "Follow Us",
+      "label": "Social Section Label"
+    },
+    {
+      "type": "header",
+      "content": "Section Color Scheme"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "accent-1",
+          "label": "Accent 1"
+        },
+        {
+          "value": "accent-2",
+          "label": "Accent 2"
+        },
+        {
+          "value": "background-1",
+          "label": "Background 1"
+        },
+        {
+          "value": "background-2",
+          "label": "Background 2"
+        },
+        {
+          "value": "inverse",
+          "label": "Inverse"
+        }
+      ],
+      "default": "background-1",
+      "label": "Color scheme"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "field_row",
+      "name": "Row with 2 inputs",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "input_1_enabled",
+          "label": "Enable input 1",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "input_1_type",
+          "options": [
+            {
+              "value": "name",
+              "label": "Name"
+            },
+            {
+              "value": "email",
+              "label": "Email"
+            },
+            {
+              "value": "phone",
+              "label": "Phone"
+            },
+            {
+              "value": "custom",
+              "label": "Custom text"
+            }
+          ],
+          "default": "name",
+          "label": "Input 1 type"
+        },
+        {
+          "type": "checkbox",
+          "id": "input_1_required",
+          "label": "Input 1 required",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "input_1_custom_name",
+          "label": "Custom input 1 name"
+        },
+        {
+          "type": "checkbox",
+          "id": "input_2_enabled",
+          "label": "Enable input 2",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "input_2_type",
+          "options": [
+            {
+              "value": "name",
+              "label": "Name"
+            },
+            {
+              "value": "email",
+              "label": "Email"
+            },
+            {
+              "value": "phone",
+              "label": "Phone"
+            },
+            {
+              "value": "custom",
+              "label": "Custom text"
+            }
+          ],
+          "default": "email",
+          "label": "Input 2 type"
+        },
+        {
+          "type": "checkbox",
+          "id": "input_2_required",
+          "label": "Input 2 required",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "input_2_custom_name",
+          "label": "Custom input 2 name"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "name": "Textarea",
+      "settings": [
+        {
+          "type": "select",
+          "id": "input_type",
+          "options": [
+            {
+              "value": "comment",
+              "label": "Message / Comment"
+            },
+            {
+              "value": "custom",
+              "label": "Custom text"
+            }
+          ],
+          "default": "comment",
+          "label": "Textarea type"
+        },
+        {
+          "type": "checkbox",
+          "id": "input_required",
+          "label": "Required",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "input_custom_name",
+          "label": "Custom name"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact Form Section",
+      "blocks": [
+        {
+          "type": "field_row",
+          "settings": {
+            "input_1_enabled": true,
+            "input_1_type": "name",
+            "input_1_required": true,
+            "input_2_enabled": true,
+            "input_2_type": "email",
+            "input_2_required": true
+          }
+        },
+        {
+          "type": "field_row",
+          "settings": {
+            "input_1_enabled": true,
+            "input_1_type": "custom",
+            "input_1_custom_name": "Subject",
+            "input_1_required": true,
+            "input_2_enabled": false
+          }
+        },
+        {
+          "type": "textarea",
+          "settings": {
+            "input_type": "comment",
+            "input_required": true
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
